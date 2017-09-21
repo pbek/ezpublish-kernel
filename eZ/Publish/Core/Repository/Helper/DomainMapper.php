@@ -78,19 +78,22 @@ class DomainMapper
      * @param \eZ\Publish\SPI\Persistence\Content\Type\Handler $contentTypeHandler
      * @param \eZ\Publish\SPI\Persistence\Content\Language\Handler $contentLanguageHandler
      * @param FieldTypeRegistry $fieldTypeRegistry
+     * @param ContentTypeDomainMapper $typeDomainMapper
      */
     public function __construct(
         ContentHandler $contentHandler,
         LocationHandler $locationHandler,
         TypeHandler $contentTypeHandler,
         LanguageHandler $contentLanguageHandler,
-        FieldTypeRegistry $fieldTypeRegistry
+        FieldTypeRegistry $fieldTypeRegistry,
+        ContentTypeDomainMapper $typeDomainMapper
     ) {
         $this->contentHandler = $contentHandler;
         $this->locationHandler = $locationHandler;
         $this->contentTypeHandler = $contentTypeHandler;
         $this->contentLanguageHandler = $contentLanguageHandler;
         $this->fieldTypeRegistry = $fieldTypeRegistry;
+        $this->typeDomainMapper = $typeDomainMapper;
     }
 
     /**
@@ -103,14 +106,8 @@ class DomainMapper
      *
      * @return \eZ\Publish\Core\Repository\Values\Content\Content
      */
-    public function buildContentDomainObject(SPIContent $spiContent, $contentType = null, array $fieldLanguages = null, $fieldAlwaysAvailableLanguage = null)
+    public function buildContentDomainObject(SPIContent $spiContent, ContentType $contentType = null, array $fieldLanguages = null, $fieldAlwaysAvailableLanguage = null)
     {
-        if ($contentType === null) {
-            $contentType = $this->contentTypeHandler->load(
-                $spiContent->versionInfo->contentInfo->contentTypeId
-            );
-        }
-
         $prioritizedFieldLanguageCode = null;
         $prioritizedLanguages = $fieldLanguages ?: [];
         if (!empty($prioritizedLanguages)) {
@@ -121,6 +118,13 @@ class DomainMapper
                     break;
                 }
             }
+        }
+
+        if (!$contentType instanceof ContentType) {
+            $contentType = $this->typeDomainMapper->buildContentTypeProxyDomainObject(
+                $spiContent->versionInfo->contentInfo->contentTypeId,
+                $fieldLanguages
+            );
         }
 
         return new Content(
@@ -135,17 +139,19 @@ class DomainMapper
     /**
      * Returns an array of domain fields created from given array of SPI fields.
      *
+     * @todo For ContentType loading in buildContentDomainObject to be able to be truly lazy loaded, this needs to be lazy to!
+     *
      * @throws InvalidArgumentType On invalid $contentType
      *
      * @param \eZ\Publish\SPI\Persistence\Content\Field[] $spiFields
-     * @param ContentType|SPIType $contentType
+     * @param ContentType $contentType
      * @param array $languages A language priority, filters returned fields and is used as prioritized language code on
      *                         returned value object. If not given all languages are returned.
      * @param string|null $alwaysAvailableLanguage Language code fallback if a given field is not found in $languages
      *
-     * @return array
+     * @return \eZ\Publish\API\Repository\Values\Content\Field[]
      */
-    public function buildDomainFields(array $spiFields, $contentType, array $languages = null, $alwaysAvailableLanguage = null)
+    public function buildDomainFields(array $spiFields, ContentType $contentType, array $languages = null, $alwaysAvailableLanguage = null)
     {
         if (!$contentType instanceof SPIType && !$contentType instanceof ContentType) {
             throw new InvalidArgumentType('$contentType', 'SPI ContentType | API ContentType');
@@ -300,6 +306,7 @@ class DomainMapper
     ) {
         $sourceFieldDefinitionIdentifier = null;
         if ($spiRelation->sourceFieldDefinitionId !== null) {
+            // todo: given content type group loading is lazy now we can simplify this to load using group of proxies for instance
             $contentType = $this->contentTypeHandler->load($sourceContentInfo->contentTypeId);
             foreach ($contentType->fieldDefinitions as $fieldDefinition) {
                 if ($fieldDefinition->id !== $spiRelation->sourceFieldDefinitionId) {
