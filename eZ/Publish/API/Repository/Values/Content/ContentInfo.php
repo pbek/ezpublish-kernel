@@ -9,6 +9,7 @@
 namespace eZ\Publish\API\Repository\Values\Content;
 
 use eZ\Publish\API\Repository\Values\ValueObject;
+use eZ\Publish\API\Repository\Values\ContentType\ContentType;
 
 /**
  * This class provides all version independent information of the Content object.
@@ -42,6 +43,13 @@ class ContentInfo extends ValueObject
      * @var mixed
      */
     protected $contentTypeId;
+
+    /**
+     * The Content Type id of the Content object.
+     *
+     * @var \eZ\Publish\API\Repository\Values\ContentType\ContentType
+     */
+    protected $contentType;
 
     /**
      * The computed name (via name schema) in the main language of the Content object.
@@ -125,4 +133,9 @@ class ContentInfo extends ValueObject
      * @var mixed|null
      */
     protected $mainLocationId;
+
+    public function getContentType() : ContentType
+    {
+        return $this->contentType;
+    }
 }

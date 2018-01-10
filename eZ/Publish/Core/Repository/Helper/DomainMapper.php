@@ -123,7 +123,7 @@ class DomainMapper
         if (!$contentType instanceof ContentType) {
             $contentType = $this->typeDomainMapper->buildContentTypeProxyDomainObject(
                 $spiContent->versionInfo->contentInfo->contentTypeId,
-                $fieldLanguages
+                $fieldLanguages ?: []
             );
         }
 
@@ -215,8 +215,24 @@ class DomainMapper
      *
      * @return \eZ\Publish\Core\Repository\Values\Content\VersionInfo
      */
-    public function buildVersionInfoDomainObject(SPIVersionInfo $spiVersionInfo, array $prioritizedLanguages = [])
+    public function buildVersionInfoDomainObject(SPIVersionInfo $spiVersionInfo, array $prioritizedLanguages = []) : APIVersionInfo
     {
+        return $this->mapVersionInfo(
+            $spiVersionInfo,
+            $this->buildContentInfoDomainObject(
+                $spiVersionInfo->contentInfo,
+                null,
+                $prioritizedLanguages
+            ),
+            $prioritizedLanguages
+        );
+    }
+
+    private function mapVersionInfo(
+        SPIVersionInfo $spiVersionInfo,
+        ContentInfo $contentInfo,
+        array $prioritizedLanguages = []
+    ) : APIVersionInfo {
         // Map SPI statuses to API
         switch ($spiVersionInfo->status) {
             case SPIVersionInfo::STATUS_ARCHIVED:
@@ -252,7 +268,7 @@ class DomainMapper
                 'initialLanguageCode' => $spiVersionInfo->initialLanguageCode,
                 'languageCodes' => $spiVersionInfo->languageCodes,
                 'names' => $spiVersionInfo->names,
-                'contentInfo' => $this->buildContentInfoDomainObject($spiVersionInfo->contentInfo),
+                'contentInfo' => $contentInfo,
                 'prioritizedNameLanguageCode' => $prioritizedNameLanguageCode,
             )
         );
@@ -265,12 +281,20 @@ class DomainMapper
      *
      * @return \eZ\Publish\API\Repository\Values\Content\ContentInfo
      */
-    public function buildContentInfoDomainObject(SPIContentInfo $spiContentInfo)
+    public function buildContentInfoDomainObject(SPIContentInfo $spiContentInfo, ContentType $contentType = null, array $prioritizedLanguages = [])
     {
+        if (!$contentType instanceof ContentType) {
+            $contentType = $this->typeDomainMapper->buildContentTypeProxyDomainObject(
+                $spiContentInfo->contentTypeId,
+                $prioritizedLanguages
+            );
+        }
+
         return new ContentInfo(
             array(
                 'id' => $spiContentInfo->id,
                 'contentTypeId' => $spiContentInfo->contentTypeId,
+                'contentType' => $contentType,
                 'name' => $spiContentInfo->name,
                 'sectionId' => $spiContentInfo->sectionId,
                 'currentVersionNo' => $spiContentInfo->currentVersionNo,
@@ -333,36 +357,40 @@ class DomainMapper
      * Builds domain location object from provided persistence location.
      *
      * @param \eZ\Publish\SPI\Persistence\Content\Location $spiLocation
-     * @param \eZ\Publish\SPI\Persistence\Content\ContentInfo|null $contentInfo
+     * @param \eZ\Publish\SPI\Persistence\Content\ContentInfo|null $spiContentInfo
      *
      * @return \eZ\Publish\API\Repository\Values\Content\Location
      */
-    public function buildLocationDomainObject(SPILocation $spiLocation, SPIContentInfo $contentInfo = null)
+    public function buildLocationDomainObject(SPILocation $spiLocation, SPIContentInfo $spiContentInfo = null)
     {
-        // TODO: this is hardcoded workaround for missing ContentInfo on root location
+        // this is hardcoded workaround for (on purpose) missing ContentInfo on root location
         if ($spiLocation->id == 1) {
-            $legacyDateTime = $this->getDateTime(1030968000); //  first known commit of eZ Publish 3.x
-            $contentInfo = new ContentInfo(
-                array(
+            $spiContentInfo = new SPIContentInfo(
+                [
                     'id' => 0,
                     'name' => 'Top Level Nodes',
                     'sectionId' => 1,
                     'mainLocationId' => 1,
                     'contentTypeId' => 1,
                     'currentVersionNo' => 1,
-                    'published' => 1,
+                    'isPublished' => 1,
                     'ownerId' => 14, // admin user
-                    'modificationDate' => $legacyDateTime,
-                    'publishedDate' => $legacyDateTime,
+                    'modificationDate' => 1030968000, //  first known 3.x commit
+                    'publicationDate' => 1030968000,
                     'alwaysAvailable' => 1,
                     'remoteId' => null,
                     'mainLanguageCode' => 'eng-GB',
-                )
+                ]
+            );
+        }
+
+        // Get API ContentInfo object
+        if ($spiContentInfo === null) {
+            $contentInfo = $this->buildContentInfoDomainObject(
+                $this->contentHandler->loadContentInfo($spiLocation->contentId)
             );
         } else {
-            $contentInfo = $this->buildContentInfoDomainObject(
-                $contentInfo ?: $this->contentHandler->loadContentInfo($spiLocation->contentId)
-            );
+            $contentInfo = $this->buildContentInfoDomainObject($spiContentInfo);
         }
 
         return new Location(
@@ -389,7 +417,7 @@ class DomainMapper
      *
      * @param \eZ\Publish\API\Repository\Values\Content\Search\SearchResult $result SPI search result with SPI Location items as hits
      *
-     * @return \eZ\Publish\SPI\Persistence\Content\Location[] Locations we did not find content info for is retunred as an array.
+     * @return \eZ\Publish\SPI\Persistence\Content\Location[] Locations we did not find content info for is returned as an array.
      */
     public function buildLocationDomainObjectsOnSearchResult(SearchResult $result)
     {
@@ -578,34 +606,16 @@ class DomainMapper
         }
     }
 
-    /**
-     * Returns \DateTime object from given $timestamp in environment timezone.
-     *
-     * This method is needed because constructing \DateTime with $timestamp will
-     * return the object in UTC timezone.
-     *
-     * @param int $timestamp
-     *
-     * @return \DateTime
-     */
-    public function getDateTime($timestamp)
+    protected function getDateTime(int $timestamp) : DateTime
     {
+        // Instead of using ctor we use setTimeStamp so timezone does not get set to UTC
         $dateTime = new DateTime();
         $dateTime->setTimestamp($timestamp);
 
         return $dateTime;
     }
 
-    /**
-     * Creates unique hash string for given $object.
-     *
-     * Used for remoteId.
-     *
-     * @param object $object
-     *
-     * @return string
-     */
-    public function getUniqueHash($object)
+    public function getUniqueHash(object $object) : string
     {
         return md5(uniqid(get_class($object), true));
     }

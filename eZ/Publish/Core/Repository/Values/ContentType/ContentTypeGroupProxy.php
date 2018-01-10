@@ -1,8 +1,6 @@
 <?php
 
 /**
- * File containing the eZ\Publish\Core\Repository\Values\ContentType\ContentType class.
- *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
  */
@@ -12,7 +10,7 @@ use eZ\Publish\API\Repository\Values\ContentType\ContentTypeGroup as APIContentT
 use eZ\Publish\Core\Repository\Values\GeneratorProxyTrait;
 
 /**
- * This class represents a proxy for a content type group value.
+ * This class represents a (lazy loaded) proxy for a content type group value.
  *
  * @internal Meant for internal use by Repository, type hint against API object instead.
  */

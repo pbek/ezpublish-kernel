@@ -11,10 +11,10 @@ namespace eZ\Publish\Core\Repository\Tests\Service\Mock;
 use eZ\Publish\API\Repository\Values\Content\Search\SearchHit;
 use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
 use eZ\Publish\API\Repository\Values\Content\VersionInfo as APIVersionInfo;
+use eZ\Publish\Core\Repository\Helper\ContentTypeDomainMapper;
 use eZ\Publish\Core\Repository\Tests\Service\Mock\Base as BaseServiceMockTest;
 use eZ\Publish\Core\Repository\Helper\DomainMapper;
-use eZ\Publish\SPI\Persistence\Content\ContentInfo;
-use eZ\Publish\SPI\Persistence\Content\Location;
+use eZ\Publish\SPI\Persistence\Content\Location as SPILocation;
 use eZ\Publish\SPI\Persistence\Content\VersionInfo as SPIVersionInfo;
 use eZ\Publish\SPI\Persistence\Content\ContentInfo as SPIContentInfo;
 
@@ -46,12 +46,14 @@ class DomainMapperTest extends BaseServiceMockTest
 
     public function providerForBuildVersionInfo()
     {
+        $contentInfo = new SPIContentInfo(['id' => 32, 'contentTypeId' => 4]);
+
         return array(
             array(
                 new SPIVersionInfo(
                     array(
                         'status' => 44,
-                        'contentInfo' => new SPIContentInfo(),
+                        'contentInfo' => $contentInfo,
                     )
                 ),
                 array(),
@@ -61,7 +63,7 @@ class DomainMapperTest extends BaseServiceMockTest
                 new SPIVersionInfo(
                     array(
                         'status' => SPIVersionInfo::STATUS_DRAFT,
-                        'contentInfo' => new SPIContentInfo(),
+                        'contentInfo' => $contentInfo,
                     )
                 ),
                 array(),
@@ -71,7 +73,7 @@ class DomainMapperTest extends BaseServiceMockTest
                 new SPIVersionInfo(
                     array(
                         'status' => SPIVersionInfo::STATUS_PENDING,
-                        'contentInfo' => new SPIContentInfo(),
+                        'contentInfo' => $contentInfo,
                     )
                 ),
                 array(),
@@ -81,7 +83,7 @@ class DomainMapperTest extends BaseServiceMockTest
                 new SPIVersionInfo(
                     array(
                         'status' => SPIVersionInfo::STATUS_ARCHIVED,
-                        'contentInfo' => new SPIContentInfo(),
+                        'contentInfo' => $contentInfo,
                         'languageCodes' => array('eng-GB', 'nor-NB', 'fre-FR'),
                     )
                 ),
@@ -95,7 +97,7 @@ class DomainMapperTest extends BaseServiceMockTest
                 new SPIVersionInfo(
                     array(
                         'status' => SPIVersionInfo::STATUS_PUBLISHED,
-                        'contentInfo' => new SPIContentInfo(),
+                        'contentInfo' => $contentInfo,
                     )
                 ),
                 array(),
@@ -107,13 +109,13 @@ class DomainMapperTest extends BaseServiceMockTest
     public function providerForBuildLocationDomainObjectsOnSearchResult()
     {
         $locationHits = [
-            new Location(['id' => 21, 'contentId' => 32]),
-            new Location(['id' => 22, 'contentId' => 33]),
+            new SPILocation(['id' => 21, 'contentId' => 32]),
+            new SPILocation(['id' => 22, 'contentId' => 33]),
         ];
 
         return [
-            [$locationHits, [32, 33], [32 => new ContentInfo(['id' => 32]), 33 => new ContentInfo(['id' => 33])], 0],
-            [$locationHits, [32, 33], [32 => new ContentInfo(['id' => 32])], 1],
+            [$locationHits, [32, 33], [32 => new SPIContentInfo(['id' => 32, 'contentTypeId' => 4]), 33 => new SPIContentInfo(['id' => 33, 'contentTypeId' => 2])], 0],
+            [$locationHits, [32, 33], [32 => new SPIContentInfo(['id' => 32, 'contentTypeId' => 4])], 1],
             [$locationHits, [32, 33], [], 2],
         ];
     }
@@ -172,7 +174,8 @@ class DomainMapperTest extends BaseServiceMockTest
             $this->getPersistenceMockHandler('Content\\Location\\Handler'),
             $this->getTypeHandlerMock(),
             $this->getLanguageHandlerMock(),
-            $this->getFieldTypeRegistryMock()
+            $this->getFieldTypeRegistryMock(),
+            $this->createMock(ContentTypeDomainMapper::class)
         );
     }
 

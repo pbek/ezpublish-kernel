@@ -118,13 +118,13 @@ class ContentTypeDomainMapper
     public function buildContentTypeProxyDomainObject(int $id, array $prioritizedLanguages = []) : APIContentType
     {
         return new ContentTypeProxy(
-            $this->generatorForContentTypeDomainObject($prioritizedLanguages), $id
+            $this->generatorForContentType($prioritizedLanguages), $id
         );
     }
 
-    private function generatorForContentTypeDomainObject(array $prioritizedLanguages = []) : \Generator
+    private function generatorForContentType(array $prioritizedLanguages = []) : \Generator
     {
-        // todo, refactor once there is a multi load spi method for loading content types (like)
+        // @todo Refactor once there is a multi load spi method for loading content types (like how groups is done)
         $id = yield;
         yield $this->buildContentTypeDomainObject(
             $this->contentTypeHandler->load($id),
@@ -215,6 +215,9 @@ class ContentTypeDomainMapper
 
     public function buildContentTypeGroupProxyList(array $ids, array $prioritizedLanguages = []) : array
     {
+        // @todo Once there is separation between business and permission logic in repo, this can rather be exposed there
+        // so we can rather use content type service in (content) domain mapper and be able to add  api cache of meta
+        // data objects involved (type, groups, section, states, ..) and be able to invalidate on calls to given service
         $groups = [];
         $generator = $this->generatorForContentTypeGroupList($ids, $prioritizedLanguages);
         foreach ($ids as $id) {
@@ -418,12 +421,7 @@ class ContentTypeDomainMapper
         return $spiFieldDefinition;
     }
 
-    /**
-     * @param int|null $timestamp
-     *
-     * @return \DateTime|null
-     */
-    protected function getDateTime($timestamp)
+    protected function getDateTime(int $timestamp) : DateTime
     {
         $dateTime = new DateTime();
         $dateTime->setTimestamp($timestamp);

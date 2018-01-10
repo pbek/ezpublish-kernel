@@ -40,7 +40,7 @@ trait GeneratorProxyTrait
      * GeneratorProxyTrait constructor.
      *
      * @param Generator $generator
-     * @param $id Object id to use for loading the object on demand.
+     * @param mixed $id Object id to use for loading the object on demand.
      */
     public function __construct(Generator $generator, $id)
     {
