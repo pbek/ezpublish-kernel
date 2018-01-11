@@ -9,6 +9,7 @@
 namespace eZ\Publish\Core\Repository\Helper;
 
 use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
+use eZ\Publish\Core\Repository\Values\Content\ContentInfoProxy;
 use eZ\Publish\SPI\Persistence\Content\Handler as ContentHandler;
 use eZ\Publish\SPI\Persistence\Content\Location\Handler as LocationHandler;
 use eZ\Publish\SPI\Persistence\Content\Language\Handler as LanguageHandler;
@@ -130,7 +131,14 @@ class DomainMapper
         return new Content(
             array(
                 'internalFields' => $this->buildDomainFields($spiContent->fields, $contentType, $fieldLanguages, $fieldAlwaysAvailableLanguage),
-                'versionInfo' => $this->buildVersionInfoDomainObject($spiContent->versionInfo, $prioritizedLanguages),
+                'versionInfo' => $this->mapVersionInfo(
+                    $spiContent->versionInfo,
+                    $this->mapContentInfo(
+                        $spiContent->versionInfo->contentInfo,
+                        $contentType
+                    ),
+                    $prioritizedLanguages
+                ),
                 'prioritizedFieldLanguageCode' => $prioritizedFieldLanguageCode,
             )
         );
@@ -153,10 +161,6 @@ class DomainMapper
      */
     public function buildDomainFields(array $spiFields, ContentType $contentType, array $languages = null, $alwaysAvailableLanguage = null)
     {
-        if (!$contentType instanceof SPIType && !$contentType instanceof ContentType) {
-            throw new InvalidArgumentType('$contentType', 'SPI ContentType | API ContentType');
-        }
-
         $fieldIdentifierMap = array();
         foreach ($contentType->fieldDefinitions as $fieldDefinitions) {
             $fieldIdentifierMap[$fieldDefinitions->id] = $fieldDefinitions->identifier;
@@ -290,8 +294,13 @@ class DomainMapper
             );
         }
 
+        return $this->mapContentInfo($spiContentInfo, $contentType);
+    }
+
+    private function mapContentInfo(SPIContentInfo $spiContentInfo, ContentType $contentType) : ContentInfo
+    {
         return new ContentInfo(
-            array(
+            [
                 'id' => $spiContentInfo->id,
                 'contentTypeId' => $spiContentInfo->contentTypeId,
                 'contentType' => $contentType,
@@ -310,8 +319,35 @@ class DomainMapper
                 'remoteId' => $spiContentInfo->remoteId,
                 'mainLanguageCode' => $spiContentInfo->mainLanguageCode,
                 'mainLocationId' => $spiContentInfo->mainLocationId,
-            )
+            ]
         );
+    }
+
+    public function buildContentInfoProxyList(array $ids, array $prioritizedLanguages = []) : array
+    {
+        $list = [];
+        $generator = $this->generatorForContentInfoList($ids, $prioritizedLanguages);
+        // @todo: once there is spi to load several content types we can also pre populate proxies for content types.
+        foreach ($ids as $id) {
+            $list[] = new ContentInfoProxy($generator, $id);
+        }
+
+        return $list;
+    }
+
+
+    private function generatorForContentInfoList(array $ids, array $prioritizedLanguages = []) : \Generator
+    {
+        $list = $this->contentHandler->loadContentInfoList($ids);
+        while (!empty($list)) {
+            $id = yield;
+            yield $this->buildContentInfoDomainObject(
+                $list[$id],
+                null,
+                $prioritizedLanguages
+            );
+            unset($list[$id]);
+        }
     }
 
     /**
@@ -386,13 +422,19 @@ class DomainMapper
 
         // Get API ContentInfo object
         if ($spiContentInfo === null) {
-            $contentInfo = $this->buildContentInfoDomainObject(
-                $this->contentHandler->loadContentInfo($spiLocation->contentId)
+            $contentInfo = new ContentInfoProxy(
+                $this->generatorForContentInfoList([$spiLocation->contentId]),
+                $spiLocation->contentId
             );
         } else {
             $contentInfo = $this->buildContentInfoDomainObject($spiContentInfo);
         }
 
+        return $this->mapLocation($spiLocation, $contentInfo);
+    }
+
+    private function mapLocation(SPILocation $spiLocation, ContentInfo $contentInfo) : APILocation
+    {
         return new Location(
             array(
                 'contentInfo' => $contentInfo,
