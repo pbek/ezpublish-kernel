@@ -316,7 +316,7 @@ class SearchService implements SearchServiceInterface
 
         $result = $this->searchHandler->findLocations($query, $languageFilter);
 
-        $missingLocations = $this->domainMapper->buildLocationDomainObjectsOnSearchResult($result);
+        $missingLocations = $this->domainMapper->buildLocationDomainObjectsOnSearchResult($result, $languageFilter);
         foreach ($missingLocations as $missingLocation) {
             $this->backgroundIndexer->registerLocation($missingLocation);
         }
