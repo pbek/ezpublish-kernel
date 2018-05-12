@@ -39,6 +39,9 @@ class ContentViewBuilder implements ViewBuilder
     /** @var \eZ\Publish\Core\MVC\Symfony\View\ParametersInjector */
     private $viewParametersInjector;
 
+    /** @var array|null */
+    private $prioritizedLanguages;
+
     /**
      * Default templates, indexed per viewType (full, line, ...).
      * @var array
@@ -55,13 +58,15 @@ class ContentViewBuilder implements ViewBuilder
         AuthorizationCheckerInterface $authorizationChecker,
         Configurator $viewConfigurator,
         ParametersInjector $viewParametersInjector,
-        ContentInfoLocationLoader $locationLoader = null
+        ContentInfoLocationLoader $locationLoader = null,
+        array $prioritizedLanguages = null
     ) {
         $this->repository = $repository;
         $this->authorizationChecker = $authorizationChecker;
         $this->viewConfigurator = $viewConfigurator;
         $this->viewParametersInjector = $viewParametersInjector;
         $this->locationLoader = $locationLoader;
+        $this->prioritizedLanguages = $prioritizedLanguages;
     }
 
     public function matches($argument)
@@ -97,11 +102,11 @@ class ContentViewBuilder implements ViewBuilder
 
         if (isset($parameters['content'])) {
             $content = $parameters['content'];
+        } elseif (isset($location)) {
+            $content = $location->getContent();
         } else {
             if (isset($parameters['contentId'])) {
                 $contentId = $parameters['contentId'];
-            } elseif (isset($location)) {
-                $contentId = $location->contentId;
             } else {
                 throw new InvalidArgumentException('Content', 'No content could be loaded from parameters');
             }
@@ -153,7 +158,7 @@ class ContentViewBuilder implements ViewBuilder
      */
     private function loadContent($contentId)
     {
-        return $this->repository->getContentService()->loadContent($contentId);
+        return $this->repository->getContentService()->loadContent($contentId, $this->prioritizedLanguages);
     }
 
     /**
@@ -171,7 +176,7 @@ class ContentViewBuilder implements ViewBuilder
     {
         $content = $this->repository->sudo(
             function (Repository $repository) use ($contentId) {
-                return $repository->getContentService()->loadContent($contentId);
+                return $repository->getContentService()->loadContent($contentId, $this->prioritizedLanguages);
             }
         );
 
@@ -184,7 +189,7 @@ class ContentViewBuilder implements ViewBuilder
 
         // Check that Content is published, since sudo allows loading unpublished content.
         if (
-            $content->getVersionInfo()->status !== VersionInfo::STATUS_PUBLISHED
+            !$content->getVersionInfo()->isPublished()
             && !$this->authorizationChecker->isGranted(
                 new AuthorizationAttribute('content', 'versionread', array('valueObject' => $content))
             )
@@ -197,7 +202,6 @@ class ContentViewBuilder implements ViewBuilder
 
     /**
      * Loads a visible Location.
-     * @todo Do we need to handle permissions here ?
      *
      * @param $locationId
      *
@@ -207,11 +211,19 @@ class ContentViewBuilder implements ViewBuilder
     {
         $location = $this->repository->sudo(
             function (Repository $repository) use ($locationId) {
-                return $repository->getLocationService()->loadLocation($locationId);
+                return $repository->getLocationService()->loadLocation($locationId, $this->prioritizedLanguages);
             }
         );
+
         if ($location->invisible) {
             throw new NotFoundHttpException('Location cannot be displayed as it is flagged as invisible.');
+        }
+
+        if (!$this->canRead($location->getContent(), $location)) {
+            throw new UnauthorizedException(
+                'content', 'read|view_embed',
+                ['contentId' => $location->contentId, 'locationId' => $location->id]
+            );
         }
 
         return $location;

@@ -224,6 +224,7 @@ services:
             - "@ezpublish.view.configurator"
             - "@ezpublish.view.view_parameters.injector.dispatcher"
             - "@ezpublish.content_info_location_loader.main"
+            - $languages$
 
     ezpublish.view_builder.block:
         class: "%ezpublish.view_builder.block.class%"
