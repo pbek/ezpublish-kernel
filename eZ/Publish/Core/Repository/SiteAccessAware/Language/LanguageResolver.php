@@ -84,7 +84,7 @@ class LanguageResolver
      *
      * @return array
      */
-    public function getPrioritizedLanguages(?array $forcedLanguages): array
+    public function getPrioritizedLanguages(array $forcedLanguages = null): array
     {
         // Skip if languages param has been set by API user
         if ($forcedLanguages !== null) {
@@ -123,7 +123,7 @@ class LanguageResolver
      *
      * @return bool
      */
-    public function getUseAlwaysAvailable(?bool $forcedUseAlwaysAvailable = null): bool
+    public function getUseAlwaysAvailable(bool $forcedUseAlwaysAvailable = null): bool
     {
         if ($forcedUseAlwaysAvailable !== null) {
             return $forcedUseAlwaysAvailable;
@@ -150,7 +150,7 @@ class LanguageResolver
      *
      * @return bool
      */
-    public function getShowAllTranslations(?bool $forcedShowAllTranslations = null): bool
+    public function getShowAllTranslations(bool $forcedShowAllTranslations = null): bool
     {
         if ($forcedShowAllTranslations !== null) {
             return $forcedShowAllTranslations;

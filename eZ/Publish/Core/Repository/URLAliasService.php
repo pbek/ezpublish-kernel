@@ -271,7 +271,7 @@ class URLAliasService implements URLAliasServiceInterface
      */
     protected function selectAliasLanguageCode(
         SPIURLAlias $spiUrlAlias,
-        ?string $languageCode,
+        string $languageCode = null,
         bool $showAllTranslations,
         array $prioritizedLanguageList
     ) {
@@ -470,7 +470,7 @@ class URLAliasService implements URLAliasServiceInterface
      */
     protected function isUrlAliasLoadable(
         SPIURLAlias $spiUrlAlias,
-        ?string $languageCode,
+        string $languageCode = null,
         bool $showAllTranslations,
         array $prioritizedLanguageList
     ) {
