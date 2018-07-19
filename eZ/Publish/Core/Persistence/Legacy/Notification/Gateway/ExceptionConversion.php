@@ -41,7 +41,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->getNotificationById($notificationId);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -53,7 +55,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             $this->innerGateway->updateNotification($notification);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        }  catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -65,7 +69,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->countUserNotifications($userId);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -77,7 +83,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->countUserPendingNotifications($userId);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -89,7 +97,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->loadUserNotifications($userId, $offset, $limit);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -105,7 +115,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->insert($notification);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -117,7 +129,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             $this->innerGateway->delete($notificationId);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }

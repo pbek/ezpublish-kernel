@@ -187,7 +187,10 @@ class Legacy extends SetupFactory
             try {
                 // Cleanup before inserting (using TRUNCATE for speed, however not possible to rollback)
                 $connection->executeUpdate($dbPlatform->getTruncateTableSql($handler->quoteIdentifier($table)));
-            } catch (DBALException | PDOException $e) {
+            } catch (DBALException $e) {
+                // Fallback to DELETE if TRUNCATE failed (because of FKs for instance)
+                $connection->createQueryBuilder()->delete($table)->execute();
+            } catch (PDOException $e) {
                 // Fallback to DELETE if TRUNCATE failed (because of FKs for instance)
                 $connection->createQueryBuilder()->delete($table)->execute();
             }

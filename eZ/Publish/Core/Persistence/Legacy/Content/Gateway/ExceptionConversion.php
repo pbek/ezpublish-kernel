@@ -283,9 +283,11 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->loadContentList($IdVersionTranslationPairs);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
             throw new RuntimeException('Database error', 0, $e);
-        }
+        } catch (PDOException $e) {
+           throw new RuntimeException('Database error', 0, $e);
+       }
     }
 
     /**

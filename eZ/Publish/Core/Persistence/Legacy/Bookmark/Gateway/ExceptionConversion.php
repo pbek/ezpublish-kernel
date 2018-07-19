@@ -40,7 +40,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->insertBookmark($bookmark);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -52,7 +54,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             $this->innerGateway->deleteBookmark($id);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -64,7 +68,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->loadBookmarkDataByUserIdAndLocationId($userId, $locationId);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -76,7 +82,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->loadUserBookmarks($userId, $offset, $limit);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -88,7 +96,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             return $this->innerGateway->countUserBookmarks($userId);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
@@ -100,7 +110,9 @@ class ExceptionConversion extends Gateway
     {
         try {
             $this->innerGateway->locationSwapped($location1Id, $location2Id);
-        } catch (DBALException | PDOException $e) {
+        } catch (DBALException $e) {
+            throw new RuntimeException('Database error', 0, $e);
+        } catch (PDOException $e) {
             throw new RuntimeException('Database error', 0, $e);
         }
     }
