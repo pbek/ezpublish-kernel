@@ -20,7 +20,7 @@ class TranslationCollectorPass implements CompilerPassInterface
     const ORIGINAL_TRANSLATION = 'en';
 
     /** @var array */
-    public const LOCALES_MAP = [
+    const LOCALES_MAP = [
         'de_DE' => 'de',
         'el_GR' => 'el',
         'es_ES' => 'es',
