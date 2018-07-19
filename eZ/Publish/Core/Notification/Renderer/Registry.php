@@ -17,7 +17,7 @@ class Registry
      * @param string $alias
      * @param \eZ\Publish\Core\Notification\Renderer\NotificationRenderer $notificationRenderer
      */
-    public function addRenderer(string $alias, NotificationRenderer $notificationRenderer): void
+    public function addRenderer(string $alias, NotificationRenderer $notificationRenderer)
     {
         $this->registry[$alias] = $notificationRenderer;
     }

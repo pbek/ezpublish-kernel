@@ -28,7 +28,7 @@ interface BookmarkService
      * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException If the current user user is not allowed to create bookmark
      * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
      */
-    public function createBookmark(Location $location): void;
+    public function createBookmark(Location $location);
 
     /**
      * Delete given location from bookmarks.
@@ -39,7 +39,7 @@ interface BookmarkService
      * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException if the current user user is not allowed to delete bookmark
      * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
      */
-    public function deleteBookmark(Location $location): void;
+    public function deleteBookmark(Location $location);
 
     /**
      * List bookmarked locations.

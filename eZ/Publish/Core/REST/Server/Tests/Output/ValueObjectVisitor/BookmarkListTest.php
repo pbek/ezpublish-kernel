@@ -55,7 +55,7 @@ class BookmarkListTest extends ValueObjectVisitorBaseTest
     /**
      * @depends testVisit
      */
-    public function testResultContainsBookmarkListElement(string $result): void
+    public function testResultContainsBookmarkListElement(string $result)
     {
         $this->assertXMLTag(
             [
@@ -72,7 +72,7 @@ class BookmarkListTest extends ValueObjectVisitorBaseTest
     /**
      * @depends testVisit
      */
-    public function testResultContainsCountElement(string $result): void
+    public function testResultContainsCountElement(string $result)
     {
         $this->assertXMLTag(
             [
@@ -86,7 +86,7 @@ class BookmarkListTest extends ValueObjectVisitorBaseTest
     /**
      * @depends testVisit
      */
-    public function testResultContainsBookmarkElement(string $result): void
+    public function testResultContainsBookmarkElement(string $result)
     {
         $query = "//BookmarkList/Bookmark[@media-type='application/vnd.ez.api.Bookmark+xml']";
 

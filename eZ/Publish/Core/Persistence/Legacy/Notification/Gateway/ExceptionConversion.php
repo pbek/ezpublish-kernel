@@ -49,7 +49,7 @@ class ExceptionConversion extends Gateway
     /**
      * {@inheritdoc}
      */
-    public function updateNotification(Notification $notification): void
+    public function updateNotification(Notification $notification)
     {
         try {
             $this->innerGateway->updateNotification($notification);
@@ -113,7 +113,7 @@ class ExceptionConversion extends Gateway
     /**
      * @param int $notificationId
      */
-    public function delete(int $notificationId): void
+    public function delete(int $notificationId)
     {
         try {
             $this->innerGateway->delete($notificationId);

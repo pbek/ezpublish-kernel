@@ -25,7 +25,7 @@ interface Handler
      *
      * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
      */
-    public function delete(int $bookmarkId): void;
+    public function delete(int $bookmarkId);
 
     /**
      * Get bookmark by user id and location id.
@@ -64,5 +64,5 @@ interface Handler
      * @param int $location1Id ID of first location
      * @param int $location2Id ID of second location
      */
-    public function locationSwapped(int $location1Id, int $location2Id): void;
+    public function locationSwapped(int $location1Id, int $location2Id);
 }

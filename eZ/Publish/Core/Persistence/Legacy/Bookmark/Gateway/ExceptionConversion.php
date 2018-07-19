@@ -48,7 +48,7 @@ class ExceptionConversion extends Gateway
     /**
      * {@inheritdoc}
      */
-    public function deleteBookmark(int $id): void
+    public function deleteBookmark(int $id)
     {
         try {
             $this->innerGateway->deleteBookmark($id);
@@ -96,7 +96,7 @@ class ExceptionConversion extends Gateway
     /**
      * {@inheritdoc}
      */
-    public function locationSwapped(int $location1Id, int $location2Id): void
+    public function locationSwapped(int $location1Id, int $location2Id)
     {
         try {
             $this->innerGateway->locationSwapped($location1Id, $location2Id);

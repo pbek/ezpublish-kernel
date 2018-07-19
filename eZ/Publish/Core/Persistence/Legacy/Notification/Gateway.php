@@ -39,7 +39,7 @@ abstract class Gateway
      *
      * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
      */
-    abstract public function updateNotification(Notification $notification): void;
+    abstract public function updateNotification(Notification $notification);
 
     /**
      * @param int $userId
@@ -69,5 +69,5 @@ abstract class Gateway
     /**
      * @param int $notificationId
      */
-    abstract public function delete(int $notificationId): void;
+    abstract public function delete(int $notificationId);
 }

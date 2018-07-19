@@ -58,7 +58,7 @@ class NotificationHandler extends AbstractHandler implements Handler
     /**
      * {@inheritdoc}
      */
-    public function delete(APINotification $notification): void
+    public function delete(APINotification $notification)
     {
         $this->logger->logCall(__METHOD__, [
             'notificationId' => $notification->id,

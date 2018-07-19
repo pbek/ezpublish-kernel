@@ -248,7 +248,7 @@ class ResizeOriginalImagesCommand extends Command
      * @param string $imageFieldIdentifier
      * @param string $filter
      */
-    private function resize(OutputInterface $output, SearchHit $hit, string $imageFieldIdentifier, string $filter): void
+    private function resize(OutputInterface $output, SearchHit $hit, string $imageFieldIdentifier, string $filter)
     {
         try {
             /** @var \eZ\Publish\Core\FieldType\Image\Value $field */

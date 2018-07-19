@@ -53,7 +53,7 @@ class NotificationService implements NotificationServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function markNotificationAsRead(Notification $notification): void
+    public function markNotificationAsRead(Notification $notification)
     {
         $this->signalDispatcher->emit(new NotificationReadSignal([
             'notificationId' => $notification->id,
@@ -81,7 +81,7 @@ class NotificationService implements NotificationServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteNotification(Notification $notification): void
+    public function deleteNotification(Notification $notification)
     {
         $this->signalDispatcher->emit(new NotificationDeleteSignal([
             'notificationId' => $notification->id,

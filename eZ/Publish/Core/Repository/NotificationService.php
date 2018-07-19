@@ -103,7 +103,7 @@ class NotificationService implements NotificationServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function markNotificationAsRead(APINotification $notification): void
+    public function markNotificationAsRead(APINotification $notification)
     {
         $currentUserId = $this->getCurrentUserId();
 
@@ -148,7 +148,7 @@ class NotificationService implements NotificationServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteNotification(APINotification $notification): void
+    public function deleteNotification(APINotification $notification)
     {
         $this->persistenceHandler->delete($notification);
     }

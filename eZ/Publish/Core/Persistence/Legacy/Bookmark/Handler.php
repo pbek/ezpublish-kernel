@@ -51,7 +51,7 @@ class Handler implements HandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(int $bookmarkId): void
+    public function delete(int $bookmarkId)
     {
         $this->gateway->deleteBookmark($bookmarkId);
     }
@@ -94,7 +94,7 @@ class Handler implements HandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function locationSwapped(int $location1Id, int $location2Id): void
+    public function locationSwapped(int $location1Id, int $location2Id)
     {
         $this->gateway->locationSwapped($location1Id, $location2Id);
     }

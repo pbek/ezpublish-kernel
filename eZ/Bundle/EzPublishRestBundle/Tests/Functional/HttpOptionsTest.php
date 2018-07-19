@@ -21,7 +21,7 @@ class HttpOptionsTest extends TestCase
      * @param string $route
      * @param string[] $expectedMethods
      */
-    public function testHttpOptions(string $route, array $expectedMethods): void
+    public function testHttpOptions(string $route, array $expectedMethods)
     {
         $restAPIPrefix = '/api/ezp/v2';
 

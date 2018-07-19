@@ -45,7 +45,7 @@ class BookmarkService implements BookmarkServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function createBookmark(Location $location): void
+    public function createBookmark(Location $location)
     {
         $this->service->createBookmark($location);
 
@@ -57,7 +57,7 @@ class BookmarkService implements BookmarkServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteBookmark(Location $location): void
+    public function deleteBookmark(Location $location)
     {
         $this->service->deleteBookmark($location);
 

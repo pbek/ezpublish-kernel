@@ -110,7 +110,7 @@ class Handler implements HandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function delete(APINotification $notification): void
+    public function delete(APINotification $notification)
     {
         $this->gateway->delete($notification->id);
     }

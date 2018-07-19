@@ -47,7 +47,7 @@ interface NotificationService
      * @throws \eZ\Publish\API\Repository\Exceptions\NotFoundException
      * @throws \eZ\Publish\API\Repository\Exceptions\UnauthorizedException
      */
-    public function markNotificationAsRead(Notification $notification): void;
+    public function markNotificationAsRead(Notification $notification);
 
     /**
      * Get count of unread users notifications.
@@ -79,5 +79,5 @@ interface NotificationService
      *
      * @param \eZ\Publish\API\Repository\Values\Notification\Notification $notification
      */
-    public function deleteNotification(Notification $notification): void;
+    public function deleteNotification(Notification $notification);
 }

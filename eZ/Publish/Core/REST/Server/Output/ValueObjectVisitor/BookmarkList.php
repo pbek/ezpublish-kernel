@@ -27,7 +27,7 @@ class BookmarkList extends ValueObjectVisitor
         $generator->endObjectElement('BookmarkList');
     }
 
-    protected function visitAttributes(Visitor $visitor, Generator $generator, BookmarkListValue $data): void
+    protected function visitAttributes(Visitor $visitor, Generator $generator, BookmarkListValue $data)
     {
         $generator->startValueElement('count', $data->totalCount);
         $generator->endValueElement('count');

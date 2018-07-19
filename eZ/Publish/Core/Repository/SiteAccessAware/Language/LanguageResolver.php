@@ -57,7 +57,7 @@ class LanguageResolver
      *
      * @param array $configLanguages
      */
-    public function setConfigLanguages(array $configLanguages): void
+    public function setConfigLanguages(array $configLanguages)
     {
         $this->configLanguages = $configLanguages;
     }
@@ -72,7 +72,7 @@ class LanguageResolver
      *
      * @param string|null $contextLanguage
      */
-    public function setContextLanguage(?string $contextLanguage): void
+    public function setContextLanguage(string $contextLanguage = null)
     {
         $this->contextLanguage = $contextLanguage;
     }
@@ -110,7 +110,7 @@ class LanguageResolver
      *
      * @param bool $defaultUseAlwaysAvailable
      */
-    public function setDefaultUseAlwaysAvailable(bool $defaultUseAlwaysAvailable): void
+    public function setDefaultUseAlwaysAvailable(bool $defaultUseAlwaysAvailable)
     {
         $this->defaultUseAlwaysAvailable = $defaultUseAlwaysAvailable;
     }
@@ -137,7 +137,7 @@ class LanguageResolver
      *
      * @param bool $defaultShowAllTranslations
      */
-    public function setShowAllTranslations(bool $defaultShowAllTranslations): void
+    public function setShowAllTranslations(bool $defaultShowAllTranslations)
     {
         $this->defaultShowAllTranslations = $defaultShowAllTranslations;
     }

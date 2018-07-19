@@ -316,7 +316,7 @@ class BookmarkTest extends BaseServiceMockTest
         return $locationServiceMock;
     }
 
-    private function assertTransactionIsNotStarted(callable $operation): void
+    private function assertTransactionIsNotStarted(callable $operation)
     {
         $repository = $this->getRepositoryMock();
         $repository->expects($this->never())->method('beginTransaction');
@@ -325,7 +325,7 @@ class BookmarkTest extends BaseServiceMockTest
         $repository->expects($this->never())->method('rollback');
     }
 
-    private function assertTransactionIsCommitted(callable $operation): void
+    private function assertTransactionIsCommitted(callable $operation)
     {
         $repository = $this->getRepositoryMock();
         $repository->expects($this->once())->method('beginTransaction');
@@ -334,7 +334,7 @@ class BookmarkTest extends BaseServiceMockTest
         $repository->expects($this->never())->method('rollback');
     }
 
-    private function assertTransactionIsRollback(callable $operation): void
+    private function assertTransactionIsRollback(callable $operation)
     {
         $repository = $this->getRepositoryMock();
         $repository->expects($this->once())->method('beginTransaction');

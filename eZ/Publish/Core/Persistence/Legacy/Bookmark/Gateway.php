@@ -29,7 +29,7 @@ abstract class Gateway
      *
      * @param int $id ID of bookmark
      */
-    abstract public function deleteBookmark(int $id): void;
+    abstract public function deleteBookmark(int $id);
 
     /**
      * Load data for an bookmark with the given $userId and $locationId.
@@ -67,5 +67,5 @@ abstract class Gateway
      * @param int $location1Id ID of first location
      * @param int $location2Id ID of second location
      */
-    abstract public function locationSwapped(int $location1Id, int $location2Id): void;
+    abstract public function locationSwapped(int $location1Id, int $location2Id);
 }

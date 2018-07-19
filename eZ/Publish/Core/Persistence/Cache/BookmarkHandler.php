@@ -32,7 +32,7 @@ class BookmarkHandler extends AbstractHandler implements BookmarkHandlerInterfac
     /**
      * {@inheritdoc}
      */
-    public function delete(int $bookmarkId): void
+    public function delete(int $bookmarkId)
     {
         $this->logger->logCall(__METHOD__, [
             'id' => $bookmarkId,
@@ -105,7 +105,7 @@ class BookmarkHandler extends AbstractHandler implements BookmarkHandlerInterfac
     /**
      * {@inheritdoc}
      */
-    public function locationSwapped(int $location1Id, int $location2Id): void
+    public function locationSwapped(int $location1Id, int $location2Id)
     {
         $this->logger->logCall(__METHOD__, [
             'location1Id' => $location1Id,

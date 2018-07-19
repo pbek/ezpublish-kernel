@@ -35,7 +35,7 @@ class BookmarkTest extends RESTFunctionalTestCase
     /**
      * @depends testCreateBookmark
      */
-    public function testCreateBookmarkIfAlreadyExists(int $locationId): void
+    public function testCreateBookmarkIfAlreadyExists(int $locationId)
     {
         $request = $this->createHttpRequest(
             'POST', '/api/ezp/v2/bookmark/' . $locationId
@@ -49,7 +49,7 @@ class BookmarkTest extends RESTFunctionalTestCase
     /**
      * @depends testCreateBookmark
      */
-    public function testIsBookmarked(int $locationId): void
+    public function testIsBookmarked(int $locationId)
     {
         $request = $this->createHttpRequest(
             'HEAD', '/api/ezp/v2/bookmark/' . $locationId
@@ -60,7 +60,7 @@ class BookmarkTest extends RESTFunctionalTestCase
         self::assertHttpResponseCodeEquals($response, Response::HTTP_OK);
     }
 
-    public function testIsBookmarkedReturnsNotFound(): void
+    public function testIsBookmarkedReturnsNotFound()
     {
         $locationId = 43;
 
@@ -76,7 +76,7 @@ class BookmarkTest extends RESTFunctionalTestCase
     /**
      * @depends testCreateBookmark
      */
-    public function testDeleteBookmark(int $locationId): void
+    public function testDeleteBookmark(int $locationId)
     {
         $request = $this->createHttpRequest(
             'DELETE', '/api/ezp/v2/bookmark/' . $locationId
@@ -87,7 +87,7 @@ class BookmarkTest extends RESTFunctionalTestCase
         self::assertHttpResponseCodeEquals($response, Response::HTTP_NO_CONTENT);
     }
 
-    public function testLoadBookmarks(): void
+    public function testLoadBookmarks()
     {
         $request = $this->createHttpRequest(
             'GET',
@@ -101,7 +101,7 @@ class BookmarkTest extends RESTFunctionalTestCase
         self::assertHttpResponseCodeEquals($response, Response::HTTP_OK);
     }
 
-    public function testDeleteBookmarkReturnNotFound(): void
+    public function testDeleteBookmarkReturnNotFound()
     {
         $locationId = 43;
 

@@ -57,7 +57,7 @@ class DoctrineDatabase extends Gateway
     /**
      * {@inheritdoc}
      */
-    public function deleteBookmark(int $id): void
+    public function deleteBookmark(int $id)
     {
         $query = $this->connection->createQueryBuilder();
         $query
@@ -142,7 +142,7 @@ class DoctrineDatabase extends Gateway
     /**
      * {@inheritdoc}
      */
-    public function locationSwapped(int $location1Id, int $location2Id): void
+    public function locationSwapped(int $location1Id, int $location2Id)
     {
         $query = $this->connection->createQueryBuilder();
         $query

@@ -81,7 +81,7 @@ class DoctrineDatabase extends Gateway
     /**
      * {@inheritdoc}
      */
-    public function updateNotification(Notification $notification): void
+    public function updateNotification(Notification $notification)
     {
         if (!isset($notification->id) || !is_numeric($notification->id)) {
             throw new InvalidArgumentException(self::COLUMN_ID, 'Cannot update Notification');
@@ -155,7 +155,7 @@ class DoctrineDatabase extends Gateway
     /**
      * {@inheritdoc}
      */
-    public function delete(int $notificationId): void
+    public function delete(int $notificationId)
     {
         $query = $this->connection->createQueryBuilder();
         $query

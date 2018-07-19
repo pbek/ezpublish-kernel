@@ -52,7 +52,7 @@ class NotificationService implements NotificationServiceInterface
      *
      * @param \eZ\Publish\API\Repository\Values\Notification\Notification $notification
      */
-    public function markNotificationAsRead(Notification $notification): void
+    public function markNotificationAsRead(Notification $notification)
     {
         $this->service->markNotificationAsRead($notification);
     }
@@ -80,7 +80,7 @@ class NotificationService implements NotificationServiceInterface
     /**
      * @param \eZ\Publish\API\Repository\Values\Notification\Notification $notification
      */
-    public function deleteNotification(Notification $notification): void
+    public function deleteNotification(Notification $notification)
     {
         $this->service->deleteNotification($notification);
     }
