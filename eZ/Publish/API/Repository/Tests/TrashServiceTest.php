@@ -339,8 +339,13 @@ class TrashServiceTest extends BaseTrashServiceTest
         $repository = $this->getRepository();
         $trashService = $repository->getTrashService();
 
-        $trashItem = new TrashItem(['id' => 12364, 'parentLocationId' => 12363]);
-        $trashService->recover($trashItem);
+        $trashService->recover(
+            $this->getTrashItemDuble(
+                12364,
+                12345,
+                12363
+            )
+        );
     }
 
     /**
@@ -797,8 +802,11 @@ class TrashServiceTest extends BaseTrashServiceTest
         $repository = $this->getRepository();
         $trashService = $repository->getTrashService();
 
-        $trashItem = new TrashItem(['id' => 123456]);
-        $trashService->deleteTrashItem($trashItem);
+        $trashService->deleteTrashItem($this->getTrashItemDuble(
+            12364,
+            12345,
+            12363
+        ));
     }
 
     /**
@@ -883,4 +891,23 @@ class TrashServiceTest extends BaseTrashServiceTest
             $this->assertTrue(true);
         }
     }
+
+    /**
+     * Get a Duble for TrashItem for exception testing and similar.
+     *
+     * @param $id
+     * @param int $contentId
+     * @param int $parentLocationId
+     *
+     * @return TrashItem
+     */
+    private function getTrashItemDuble($id, $contentId = 44, $parentLocationId = 2)
+    {
+        return new TrashItem([
+            'id' => $id,
+            'parentLocationId' => $parentLocationId,
+            'contentInfo' => new ContentInfo(['id' => $contentId]),
+        ]);
+    }
+}
 }
